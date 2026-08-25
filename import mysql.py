@@ -29,21 +29,44 @@ def insert():
 
 def update():
     idd = input("SalesID to update: ")
-    new_sales = input("New Sales Value: ")
 
-    sql = "update sales set Sales=%s WHERE SalesID=%s"
-    mycursor.execute(sql, (new_sales, idd))
-    mydb.commit()
-    print("Updated")
+    sql = "select * from sales where SalesID=%s"
+    mycursor.execute(sql, (idd,))
+
+    data = mycursor.fetchone()
+
+    if data:
+        print("Record Exists.")
+
+        new_sales = input("New Sales Value: ")
+
+        sql = "update sales set Sales=%s where SalesID=%s"
+        mycursor.execute(sql, (new_sales, idd))
+        mydb.commit()
+
+        print("Updated")
+    else:
+        print("Record doesn't exist")
 
 
 def delete():
     idd = input("SalesID To Delete: ")
 
-    sql = "delete FROM sales where SalesID=%s"
+    sql = "select * from sales where SalesID=%s"
     mycursor.execute(sql, (idd,))
-    mydb.commit()
-    print("Deleted")
+
+    data = mycursor.fetchone()
+
+    if data:
+        print("Record Exists.")
+
+        sql = "delete from sales where SalesID=%s"
+        mycursor.execute(sql, (idd,))
+        mydb.commit()
+
+        print("Deleted")
+    else:
+        print("Record doesn't exist")
 
 
 def display():
@@ -125,10 +148,8 @@ def graph():
 
         print("\nANALYSIS OF SALES OF CARS")
         print("1.Company comparison (same country)")
-        print("2.Single company trend (over time)")
-        print("3.Country comparison (same brand)")
-        print("4.Final combined visual")
-        print("5.Exit")
+        print("2.Final combined visual")
+        print("3.Return to main menu")
 
 
         choice2 = input("Enter your choice: ").strip()
@@ -181,79 +202,9 @@ def graph():
             pt.show()
 
 
-
-        # Single company trend
-
-        elif choice2 == "2":
-
-            brand_id, brand_name = choose_brand()
-
-            if brand_id is None:
-                continue
-
-
-            years=[]
-            sales=[]
-
-
-            mycursor.execute(f"SELECT Sales_Year,SUM(Sales) FROM sales WHERE BrandID={brand_id} GROUP BY Sales_Year ORDER BY Sales_Year")
-
-
-            for year,value in mycursor.fetchall():
-                years.append(year)
-                sales.append(value)
-
-
-            pt.figure(figsize=(8,5))
-
-            pt.plot(years,sales,marker="o",label=brand_name)
-
-            pt.title(f"{brand_name} Sales Over Time")
-            pt.xlabel("Year")
-            pt.ylabel("Sales")
-            pt.legend()
-            pt.grid(True)
-
-            pt.show()
-
-
-
-        # Country comparison
-
-        elif choice2 == "3":
-
-            brand_id, brand_name = choose_brand()
-
-            if brand_id is None:
-                continue
-
-
-            countries=["Japan","USA","India"]
-            country_data=[]
-
-
-            for c in countries:
-
-                mycursor.execute(f"SELECT SUM(Sales) FROM sales WHERE BrandID={brand_id} AND Country='{c}'")
-
-                result=mycursor.fetchone()[0]
-                country_data.append(result)
-
-
-
-            pt.bar(countries,country_data)
-
-            pt.title(f"{brand_name} Sales by Country")
-            pt.xlabel("Country")
-            pt.ylabel("Total Sales")
-
-            pt.show()
-
-
-
         # Final visual
 
-        elif choice2 == "4":
+        elif choice2 == "2":
 
             countries=["Japan","USA","India"]
             Honda_sales=[]
@@ -305,7 +256,7 @@ def graph():
 
 
 
-        elif choice2 == "5":
+        elif choice2 == "3":
             break
 
 

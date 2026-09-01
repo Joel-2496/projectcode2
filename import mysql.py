@@ -92,28 +92,6 @@ def search():
 
 #------------------------selection functions--------------------------
 
-def choose_brand():
-
-    while True:
-        print("1.Honda")
-        print("2.Nissan")
-        print("3.Return")
-
-        userinput = input("Enter choice:")
-
-        if userinput == "1":
-            return 1, "Honda"
-
-        elif userinput == "2":
-            return 2, "Nissan"
-
-        elif userinput == "3":
-            return None, None
-
-        else:
-            print("Invalid input")
-
-
 def choose_country():
 
     while True:
@@ -269,7 +247,7 @@ def graph():
 
 while True:
 
-    print("\nMain Menu")
+    print("Main Menu")
     print("1. Display")
     print("2. Insert")
     print("3. Update")
